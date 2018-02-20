@@ -33,7 +33,7 @@ import java.util.TimeZone;
  */
 public class ConstantInformation
 {
-    
+
     public static DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     
     public static final long ONE_HOUR = 60 * 60 * 1000L;
@@ -50,6 +50,7 @@ public class ConstantInformation
             "黑龙江", "湖北", "湖南", "吉林", "江苏", "江西", "辽宁", "内蒙古", "宁夏", "青海", "山东", "山西", "陕西", "上海", "四川", "天津", "西藏",
             "新疆", "浙江", "重庆", "香港", "澳门", "台湾"};
     private static Map<String, String[]> cityMap = new HashMap<>();
+    public static final String REGULAR_METHODS = "regular_methods";//常用玩法
     
     static
     {

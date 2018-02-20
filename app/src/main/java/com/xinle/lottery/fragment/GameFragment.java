@@ -38,10 +38,13 @@ import com.xinle.lottery.game.Game;
 import com.xinle.lottery.game.GameConfig;
 import com.xinle.lottery.game.MenuController;
 import com.xinle.lottery.game.OnSelectedListener;
+import com.xinle.lottery.material.ConstantInformation;
+import com.xinle.lottery.material.MethodQueue;
 import com.xinle.lottery.material.ShoppingCart;
 import com.xinle.lottery.material.Ticket;
 import com.xinle.lottery.pattern.TitleTimingView;
 import com.xinle.lottery.user.UserCentre;
+import com.xinle.lottery.util.SharedPreferencesUtils;
 import com.xinle.lottery.view.TableMenu;
 import com.google.gson.reflect.TypeToken;
 
@@ -81,6 +84,7 @@ public class GameFragment extends BaseFragment implements OnSelectedListener, Ta
     private UserCentre userCentre;
     private ArrayList<MethodList> methodList;
     private String[] array = new String[2];
+    private MethodQueue mRegularMethods;//常用玩法
 
     public static void launch(BaseFragment fragment, Lottery lottery) {
         Bundle bundle = new Bundle();
@@ -100,6 +104,25 @@ public class GameFragment extends BaseFragment implements OnSelectedListener, Ta
         initMenu();
         loadMethodFromXml();
         loadMenu();
+        mRegularMethods=getRegularMethods();
+    }
+
+    /**从本地获取或者新建常用玩法**/
+    private MethodQueue getRegularMethods()
+    {
+        MethodQueue regularMethods=null;
+        try{
+            regularMethods = (MethodQueue) SharedPreferencesUtils.getObject(getActivity(),
+                    ConstantInformation.REGULAR_METHODS, XinLeApp.getUserCentre().getUserID() + "_" + lottery
+                            .getId());
+        }catch (Exception e)
+        {
+            Log.d(TAG, "getRegularMethods: fail to load methods.");
+        }
+        if (regularMethods == null){
+            regularMethods = new MethodQueue(9);
+        }
+        return regularMethods;
     }
 
     private void applyArguments() {
@@ -202,6 +225,15 @@ public class GameFragment extends BaseFragment implements OnSelectedListener, Ta
         if (webView != null) {
             webView.destroy();
         }
+
+        try
+        {
+            SharedPreferencesUtils.putObject(getActivity(), ConstantInformation.REGULAR_METHODS, XinLeApp
+                    .getUserCentre().getUserID() + "_" + lottery.getId(), mRegularMethods);
+        } catch (Exception e)
+        {
+            Log.d(TAG, "onDestroyView: fail to save methods.");
+        }
     }
 
     @OnClick(android.R.id.home)
@@ -301,6 +333,21 @@ public class GameFragment extends BaseFragment implements OnSelectedListener, Ta
         MethodType methodType = defaultMethodType(method);
         changeGameMethod(methodType, method);
 
+        saveLastMethod(method);
+    }
+
+    private void saveLastMethod(Method method) {
+        if (method != null) {
+            String fileName = XinLeApp.getUserCentre().getUserID() + " lastPlay";
+            try {
+                SharedPreferencesUtils.putObject(getActivity(), fileName, lottery.getName()+lottery.getId(), method);
+
+
+                SharedPreferencesUtils.putObject(getActivity(), ConstantInformation.REGULAR_METHODS, XinLeApp
+                        .getUserCentre().getUserID() + "_" + lottery.getId(), mRegularMethods);
+            } catch (Exception e) {
+            }
+        }
     }
 
     private class JsInterface {
@@ -387,6 +434,7 @@ public class GameFragment extends BaseFragment implements OnSelectedListener, Ta
             game.destroy();
             menuController.addPreference(method);
             saveMethod2Xml(methodType, method);
+            addRegularMethods(method);
             array = new String[]{GsonHelper.toJson(methodType), GsonHelper.toJson(method)};
         }
         if (method.getId() == 178)
@@ -406,6 +454,11 @@ public class GameFragment extends BaseFragment implements OnSelectedListener, Ta
             pickRandom.setVisibility(View.VISIBLE);
 
         loadWebViewIfNeed();
+    }
+
+    private void addRegularMethods(Method method)
+    {
+        mRegularMethods.addFirst(method);
     }
 
     private Method defaultGameMethod(ArrayList<MethodList> methodList) {
@@ -481,7 +534,17 @@ public class GameFragment extends BaseFragment implements OnSelectedListener, Ta
             if (request.getId() == ID_METHOD_LIST) {
                 methodList = (ArrayList<MethodList>) response.getData();
                 if (methodList != null && game == null) {
-                    Method method = defaultGameMethod(methodList);
+
+                    //获取上一次点击的玩法
+                    Method method = (Method) SharedPreferencesUtils.getObject(getActivity(), XinLeApp
+                            .getUserCentre().getUserID() + " lastPlay", lottery.getName()+lottery.getId());
+
+                    if(method==null) {
+                        method = defaultGameMethod(methodList);
+                    }
+
+//                    Method method=defaultGameMethod(methodList);
+
                     MethodType methodType = defaultMethodType(method);
                     saveMethod2Xml(methodType, method);
                     menuController.addPreference(method);

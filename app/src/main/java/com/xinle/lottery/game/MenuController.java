@@ -13,6 +13,9 @@ import com.xinle.lottery.component.TagCloudView;
 import com.xinle.lottery.data.Lottery;
 import com.xinle.lottery.data.Method;
 import com.xinle.lottery.data.MethodList;
+import com.xinle.lottery.material.ConstantInformation;
+import com.xinle.lottery.material.MethodQueue;
+import com.xinle.lottery.util.SharedPreferencesUtils;
 import com.xinle.lottery.view.TableMenu;
 
 import java.util.ArrayList;
@@ -51,6 +54,7 @@ public class MenuController {
     private boolean dataChanged;
     private List<String> tags = new ArrayList<>(0);
     private HashMap<Integer, Object[]> map = new HashMap<>(0);//记录选择的位置
+    private MethodQueue mRegularMethods;
 
     public MenuController(FragmentActivity activity, Lottery lottery) {
         this.activity = activity;
@@ -119,7 +123,7 @@ public class MenuController {
                 for (int i = 0; i < tags.size(); i++) {
                     if ((boolean) map.get(i)[1]) {
                         if (onClickMethodListener != null) {
-                            onClickMethodListener.onClickMethod(currentMethod);
+                            onClickMethodListener.onClickMethod(/*currentMethod*/mRegularMethods.get(position));
                         }
                     }
                 }
@@ -157,19 +161,29 @@ public class MenuController {
     private void usePreference() {
         tags.clear();
         map.clear();
-        if (chooserModel.getLotteryInfos().size() >= 6) {
-            for (int i = 0; i < 6; i++) {
-                if (chooserModel.getMethodInfo(i) != null) {
-                    tags.add(chooserModel.getMethodInfo(i).method.getNameCn());
-                    map.put(i, new Object[]{tags.get(i), false});
-                }
-            }
-        } else {
-            for (int i = 0; i < chooserModel.getLotteryInfos().size(); i++) {
-                if (chooserModel.getMethodInfo(i) != null) {
-                    tags.add(chooserModel.getMethodInfo(i).method.getNameCn());
-                    map.put(i, new Object[]{tags.get(i), false});
-                }
+//        if (chooserModel.getLotteryInfos().size() >= 6) {
+//            for (int i = 0; i < 6; i++) {
+//                if (chooserModel.getMethodInfo(i) != null) {
+//                    tags.add(chooserModel.getMethodInfo(i).method.getNameCn());
+//                    map.put(i, new Object[]{tags.get(i), false});
+//                }
+//            }
+//        } else {
+//            for (int i = 0; i < chooserModel.getLotteryInfos().size(); i++) {
+//                if (chooserModel.getMethodInfo(i) != null) {
+//                    tags.add(chooserModel.getMethodInfo(i).method.getNameCn());
+//                    map.put(i, new Object[]{tags.get(i), false});
+//                }
+//            }
+//        }
+
+        mRegularMethods = (MethodQueue) SharedPreferencesUtils.getObject(activity, ConstantInformation.REGULAR_METHODS,
+                XinLeApp.getUserCentre().getUserID() + "_" + lotteryId);
+
+        if (mRegularMethods != null) {
+            for (int i = 0, size = mRegularMethods.size(); i < size; i++) {
+                tags.add(mRegularMethods.get(i).getNameCn());
+                map.put(i, new Object[]{tags.get(i), false});
             }
         }
 

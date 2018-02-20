@@ -1,14 +1,17 @@
 package com.xinle.lottery.data;
 
+import android.support.annotation.NonNull;
+
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * 玩法信息
  * Created by ACE-PC on 2016/1/22.
  */
-public class Method {
+public class Method  implements Serializable, Comparable{
     @SerializedName("id")
     private int id;
     @SerializedName("pid")
@@ -98,5 +101,14 @@ public class Method {
 
     public void setBasicMethods(String basicMethods) {
         this.basicMethods = basicMethods;
+    }
+
+
+    @Override
+    public int compareTo(@NonNull Object o)
+    {
+        if (o instanceof Method && this.id==((Method) o).id)
+            return 0;
+        return 1;
     }
 }
