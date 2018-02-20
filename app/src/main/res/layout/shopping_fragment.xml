@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f5f5f5"
+    android:orientation="vertical">
+
+    <!--  销售倒计时 -->
+    <include
+        android:id="@+id/shopping_top_timing"
+        layout="@layout/manager_title_timing_sales_view" />
+
+    <View style="@style/divideLine" />
+    <!-- 购物车展示 -->
+    <ListView
+        android:id="@+id/shopping_list"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/white"
+        android:divider="@color/gameCheck"
+        android:dividerHeight="1dip" />
+
+    <!-- 购物车界面导航 -->
+    <LinearLayout
+        android:id="@+id/shopping_operate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/shopping_bottom"
+            layout="@layout/shroudview" />
+
+        <View style="@style/divideLine" />
+
+        <include
+            android:id="@+id/shopping_choosetip"
+            layout="@layout/choosetips" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/white" />
+
+    <LinearLayout
+        android:id="@+id/lottery_choose_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="73dp"
+        android:background="@color/app_main_dark"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/chase_button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="6dp"
+            android:layout_weight="1"
+            android:background="@drawable/button_type"
+            android:text="智能追号"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/lottery_shopping_balance"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="余额：0"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/lottery_shopping_buy"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="6dp"
+            android:layout_weight="1"
+            android:background="@drawable/button_type"
+            android:text="确认投注"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+</LinearLayout>
