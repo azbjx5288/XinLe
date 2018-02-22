@@ -96,7 +96,7 @@ public class DrawFragment extends BaseFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         userCentre = XinLeApp.getUserCentre();
-        money.setText(String.format("%.4f", XinLeApp.getUserCentre().getUserInfo().getAbalance()));
+        money.setText(String.format("%.4f", XinLeApp.getUserCentre().getUserInfo().getWithdrawable()));//可提现余额
         loadInfo();
         withdrawalsTime.start(0);
     }
@@ -185,7 +185,7 @@ public class DrawFragment extends BaseFragment {
                     UserInfo userInfo = ((UserInfo) response.getData());
                     XinLeApp.getUserCentre().setUserInfo(userInfo);
                     if (userInfo != null) {
-                        money.setText(String.format("%.4f", userInfo.getAbalance()));
+                        money.setText(String.format("%.4f", userInfo.getWithdrawable()));//可提现余额
                     }
                     break;
                 case ID_CARD_INFO:

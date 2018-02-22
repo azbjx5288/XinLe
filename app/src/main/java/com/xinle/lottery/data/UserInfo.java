@@ -73,6 +73,33 @@ public class UserInfo {
     @SerializedName("fund_pwd_seted")
     private boolean fundPwdSeted;
     private String token;
+    private String withdrawable;//可提现
+    private String frozen;//冻结
+    private String prohibit;// 不可用
+
+    public String getWithdrawable() {
+        return withdrawable;
+    }
+
+    public void setWithdrawable(String withdrawable) {
+        this.withdrawable = withdrawable;
+    }
+
+    public String getFrozen() {
+        return frozen;
+    }
+
+    public void setFrozen(String frozen) {
+        this.frozen = frozen;
+    }
+
+    public String getProhibit() {
+        return prohibit;
+    }
+
+    public void setProhibit(String prohibit) {
+        this.prohibit = prohibit;
+    }
 
     public int getId() {
         return id;
